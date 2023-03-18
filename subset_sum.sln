@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{B1F2AB6C-650D-4E23-9239-A9DD63A6AE83}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "SubsetSum", "lib\src\SubsetSum.fsproj", "{80091BD9-6B11-4C47-AD41-26084E794503}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "SubsetSumTest", "lib\test\SubsetSumTest.fsproj", "{72971B26-7D67-40B5-B364-67428274114F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{80091BD9-6B11-4C47-AD41-26084E794503}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80091BD9-6B11-4C47-AD41-26084E794503}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80091BD9-6B11-4C47-AD41-26084E794503}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80091BD9-6B11-4C47-AD41-26084E794503}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72971B26-7D67-40B5-B364-67428274114F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72971B26-7D67-40B5-B364-67428274114F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72971B26-7D67-40B5-B364-67428274114F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72971B26-7D67-40B5-B364-67428274114F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{80091BD9-6B11-4C47-AD41-26084E794503} = {B1F2AB6C-650D-4E23-9239-A9DD63A6AE83}
+		{72971B26-7D67-40B5-B364-67428274114F} = {B1F2AB6C-650D-4E23-9239-A9DD63A6AE83}
+	EndGlobalSection
+EndGlobal
