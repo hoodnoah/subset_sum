@@ -6,7 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Library.fs" />
+    <Compile Include="SubsetSum.Types.fs" />
+    <Compile Include="SubsetSum.Functions.fs" />
   </ItemGroup>
 
 </Project>
