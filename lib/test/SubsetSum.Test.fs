@@ -78,11 +78,9 @@ module InputGen =
         static member OkInput() = Arb.fromGen genOkInput
         static member ErrorInput() = Arb.fromGen genBadInput
 
-
 let compareOutput (output1: Output) (output2: Output) =
     Expect.equal output1.Target output2.Target "Output targets didn't match"
     Expect.sequenceEqual output1.Elements output2.Elements "Elements were not equal,"
-
 
 let elementExistsInSequence sequence element = Seq.contains element sequence
 
