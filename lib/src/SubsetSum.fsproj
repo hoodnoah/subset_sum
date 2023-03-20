@@ -8,6 +8,12 @@
   <ItemGroup>
     <Compile Include="SubsetSum.Types.fs" />
     <Compile Include="SubsetSum.Functions.fs" />
+    <Compile Include="ExcelInput.Types.fs" />
+    <Compile Include="ExcelInput.Functions.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
   </ItemGroup>
 
 </Project>
