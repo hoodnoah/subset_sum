@@ -45,7 +45,7 @@ module InputGen =
                     Gen.listOfLength maxSize genItem)
         }
 
-    let genOkInput: Gen<Input> =
+    let genOkInput: Gen<OkInput> =
         gen {
             let! elemList = gen10ElementList
             let! itemsToSum = Gen.subListOf elemList // randomly select elements from floatList
@@ -56,21 +56,28 @@ module InputGen =
 
             let elemSeq = Seq.ofList elemList
 
-            return { Elements = elemSeq; Target = target }
+            return
+                { Input.Elements = elemSeq
+                  Input.Target = target }
+                |> OkInput
         }
 
-    let genBadInput: Gen<Input> =
+    let genBadInput: Gen<ErrorInput> =
         gen {
             let! elemList = gen10ElementList
 
             let target =
                 elemList
+                |> List.map (fun item -> { item with Value = abs item.Value })
                 |> List.sumBy (fun { Value = value } -> value)
-                |> (fun x -> x + 1.0) // add one to sum of all values
+                |> (fun x -> x + 1.0)
 
             let elemSeq = Seq.ofList elemList
 
-            return { Elements = elemSeq; Target = target }
+            return
+                { Input.Elements = elemSeq
+                  Input.Target = target }
+                |> ErrorInput
         }
 
     type InputGen() =
@@ -115,74 +122,22 @@ let resultSumsToTarget =
             Expect.floatClose FloatCompAccuracy resultSum input.Target "Did not sum to the input's target"
         | _ -> failtest "Did not return an OK result when one was expected."
 
-let sanityCheck =
-    testCase "returns a sane result given a specific input"
-    <| fun _ ->
-        let inputElems =
-            [ { Label = "01"; Value = 1.0 }
-              { Label = "02"; Value = 2.0 }
-              { Label = "03"; Value = 3.0 } ]
-            |> Seq.ofList
-
-        let target = 5.0
-
-        let expectedResultElements: seq<Element> =
-            [ { Label = "02"; Value = 2.0 }
-              { Label = "03"; Value = 3.0 } ]
-            |> Seq.ofList
-
-        let expectedResult =
-            { Output.Elements = expectedResultElements
-              Output.Target = target }
-
-        let input =
-            { Input.Elements = inputElems
-              Target = target }
-
+let resultErrorsWithoutSolution =
+    testPropertyWithConfig config "Returns an Error result when there is no combination which sums to the Target"
+    <| fun (ErrorInput input) ->
         let result = subsetSum input
 
-        match result with
-        | Ok r -> compareOutput r expectedResult
-        | _ -> failtest "Did not return an Ok result when one was expected."
-
-let sanityCheck2 =
-    testCase "returns a sane result given a specific input containing a negative number"
-    <| fun _ ->
-        let inputElems =
-            [ { Label = "01"; Value = -1.0 }
-              { Label = "02"; Value = 2.0 }
-              { Label = "03"; Value = 3.0 } ]
-            |> Seq.ofList
-
-        let target = -1.0
-
-        let expectedResultElements: seq<Element> =
-            [ { Label = "01"; Value = -1.0 } ] |> Seq.ofList
-
-        let expectedResult =
-            { Output.Elements = expectedResultElements
-              Output.Target = target }
-
-        let input =
-            { Input.Elements = inputElems
-              Target = target }
-
-        let result = subsetSum input
+        let expectedError =
+            "No solution." |> NoSolutionError |> NoSolution
 
         match result with
-        | Ok r -> compareOutput r expectedResult
-        | _ -> failtest "Did not return an Ok result when one was expected."
-
+        | Ok _ -> failtest "returned Ok for an input without a solution"
+        | Error e -> Expect.equal e expectedError "Did not return the expected type of error"
 
 [<Tests>]
 let AllTests =
     testList
         "allTests"
-        [
-
-          resultElementsInOriginalList
+        [ resultElementsInOriginalList
           resultSumsToTarget
-          sanityCheck
-          sanityCheck2
-
-          ]
+          resultErrorsWithoutSolution ]
