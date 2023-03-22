@@ -18,4 +18,3 @@ bin
 # End of https://www.toptal.com/developers/gitignore/api/fsharp
 
 *.fsx
-*.xlsx

@@ -1,7 +1,6 @@
 module Domain.SubsetSum
 
 type Value = Value of float
-type Target = Target of float
 type Element = { Label: string; Value: float }
 
 type Input =

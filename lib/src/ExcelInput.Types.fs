@@ -4,7 +4,7 @@ open Domain.SubsetSum
 
 type ExcelInput =
     { InputElements: Element seq
-      Targets: Target seq }
+      Targets: float seq }
 
 type InputFilepath = InputFilepath of string
 
@@ -21,6 +21,6 @@ type ExcelInputError =
     | ElementReadError
     | TargetReadError
 
-type StreamReader = InputFilepath -> System.IO.Stream
+type StreamReader = InputFilepath -> System.IO.FileStream
 
-type ReadInput = StreamReader -> Result<ExcelInput, ExcelInputError>
+type ReadInput = StreamReader -> InputFilepath -> Result<ExcelInput, ExcelInputError>
