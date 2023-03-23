@@ -16,8 +16,6 @@ let private ValueColName = "Value"
 [<Literal>]
 let private TargetsColName = "Targets"
 
-let private (>>=) = Result.bind
-
 type private Header =
     | Label
     | Value
@@ -32,43 +30,42 @@ let private headerToStr header =
 /// Generic function for retrieving and type-casting a cell's value
 let private getValue<'T> (fromCell: IXLCell) = fromCell.GetValue<'T>()
 
+
 let private getStringValue = getValue<string>
 let private getFloatValue = getValue<float>
 
 /// Tries to extract the columns from the provided sheet, failing if there are less than 3 used columns
-let private sheetToCols (sheet: IXLWorksheet) =
-    let cols = sheet.ColumnsUsed()
-
-    if Seq.length cols < 3 then
-        Error
-            "There were too few (less than 3) columns in the provided workbook sheet. There must be a column for Label, Value, and Targets."
-    else
-        Ok cols
+let private sheetToCols (sheet: IXLWorksheet) = sheet.ColumnsUsed()
 
 /// Gets the header value (first row of a column) as a string
 let private getHeaderValue (column: IXLColumn) =
     column.FirstCellUsed() |> getStringValue
 
+/// Determines if a column's header matches a string
+let private headerMatchesString (strVal: string) (column: IXLColumn) =
+    column
+    |> getHeaderValue
+    |> (fun x -> x.ToLowerInvariant() = strVal.ToLowerInvariant())
+
 /// Tries to find a specific column by name (case insensitive) from a sequence of columns
-let private tryFindColumn (columnHeader: string) (columns: IXLColumns) =
+let private findColumn (columnHeader: string) (columns: IXLColumns) =
     let colMatches =
         columns
-        |> Seq.filter (fun x -> (getHeaderValue x).ToLowerInvariant() = columnHeader.ToLowerInvariant())
+        |> Seq.filter (headerMatchesString columnHeader)
 
     if Seq.isEmpty colMatches then
-        Error $"No column matched the header \"{columnHeader}\""
+        failwith $"No column matched the header \"{columnHeader}\""
     else
-        Ok(Seq.head colMatches)
+        Seq.head colMatches
 
 /// Tries to extract all cells after the header row of a given column
 let private getValueCellsFromColumn (column: IXLColumn) =
     let valueCells = column.CellsUsed() |> Seq.tail
 
     if Seq.isEmpty valueCells then
-        Error "No cells were defined after the header row for the provided column."
+        failwith "No cells were defined after the header row for the provided column."
     else
-        Ok valueCells
-
+        valueCells
 
 let readInput: ReadInput =
     fun fileReader filepath ->
@@ -76,7 +73,34 @@ let readInput: ReadInput =
 
         use spreadsheet = new XLWorkbook(fileStream)
         let sheet1 = spreadsheet.Worksheets |> Seq.head
+        let columns = sheet1 |> sheetToCols
 
+        let labelColumn =
+            columns
+            |> findColumn "label"
+            |> getValueCellsFromColumn
+            |> Seq.map getStringValue
+            |> List.ofSeq
 
+        let valueColumn =
+            columns
+            |> findColumn "value"
+            |> getValueCellsFromColumn
+            |> Seq.map getFloatValue
+            |> List.ofSeq
 
-        failwith "not implemented"
+        let targetColumn =
+            columns
+            |> findColumn "targets"
+            |> getValueCellsFromColumn
+            |> Seq.map getFloatValue
+            |> List.ofSeq
+
+        let inputElems =
+            Seq.zip labelColumn valueColumn
+            |> Seq.map (fun (l, v) -> { Label = l; Value = v })
+            |> List.ofSeq
+
+        { InputElements = inputElems
+          Targets = targetColumn }
+        |> Ok

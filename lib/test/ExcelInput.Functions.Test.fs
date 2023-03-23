@@ -13,7 +13,8 @@ open Domain.SubsetSum
 open Functions.ExcelInput
 
 [<Literal>]
-let testFilePath = "test_fixtures/testInput.xlsx"
+let testFilePath =
+    "./lib/test/test_fixtures/testInput.xlsx"
 
 let readOnlyReader (InputFilepath filepath) =
     File.Open(filepath, FileMode.Open, FileAccess.Read)
@@ -32,11 +33,9 @@ let readsExampleFileCorrectly =
               ("Element 8", 8)
               ("Element 9", 9)
               ("Element 10", 10) ]
-            |> Seq.ofList
-            |> Seq.map (fun (l, v) -> { Element.Label = l; Value = float v })
+            |> List.map (fun (l, v) -> { Element.Label = l; Value = float v })
 
-        let expectedTargets =
-            [ 1; 3; 5; 7; 9 ] |> Seq.ofList |> Seq.map float
+        let expectedTargets = [ 1; 3; 5; 7; 9; 55 ] |> List.map float
 
         let expectedResult =
             { InputElements = expectedElements
