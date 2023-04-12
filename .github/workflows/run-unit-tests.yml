@@ -8,9 +8,6 @@ on:
     branches:
       - "develop"
       - "main"
-  push:
-    branches:
-      - "cicd"
 jobs:
   Run-Unit-Tests:
     strategy: 
