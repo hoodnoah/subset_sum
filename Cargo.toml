@@ -3,7 +3,13 @@ name = "subset_sum"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[profile.release]
+strip = true
+opt-level = 3     # optimize for speed
+lto = true        # link-time optimization
+codegen-units = 1 # one codegen unit per crate
+panic = "abort"   # no unwinding stack trace
+
 
 [dependencies]
 itertools = "0.10.5"
