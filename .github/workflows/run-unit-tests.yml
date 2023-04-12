@@ -13,7 +13,10 @@ on:
       - "cicd"
 jobs:
   Run-Unit-Tests:
-    runs-on: ubuntu-22.04
+    strategy: 
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions-rs/toolchain@v1
