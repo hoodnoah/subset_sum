@@ -2,3 +2,5 @@
   value: 100
 - label: item two
   value: 200
+- label: item three
+  value: 300.0
