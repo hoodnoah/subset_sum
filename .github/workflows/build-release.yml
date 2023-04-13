@@ -1,14 +1,26 @@
 name: Build and create release
-run-name: 
 on:
   push:
-    branches:
-      - "cicd"
-  release:
-    types: [created]
+    branches: 
+        - cicd
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
 jobs:
-  Build-and-Upload:
-    permissions: write-all
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: true
+          prerelease: true
+
+  build-and-upload:
     runs-on: windows-latest
 
     steps:
@@ -19,21 +31,21 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
+          target: x86_64-pc-windows-msvc
           override: true
         
-      - name: Build Rust Binary
+      - name: Build Rust Binaries
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --release
+          args: --release --target=x86_64-pc-windows-msvc
 
       - name: Upload Release Asset
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: target/release/subset_sum
+          file: target/x86_64-pc-windows-msvc/release/subset_sum.exe
           tag: ${{ github.ref }} 
           overwrite: true
-          file_glob: true
 
 
