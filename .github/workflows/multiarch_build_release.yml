@@ -66,29 +66,33 @@ jobs:
         run: |
           mv target/${{ matrix.target }}/release/subset_sum.exe target/${{ matrix.target }}/release/ss.exe
 
+      - name: Extract tag name
+        id: get_tag_name
+        run: | 
+          TAG_NAME=$(basename ${{ github.ref}})
+          echo "tag_name=$TAG_NAME" >> $GITHUB_ENV
+
       - name: create zip archive (linux)
         if: ${{ matrix.os != 'windows-latest' }}
         shell: bash
-        run: |
+`        run: |
           cd target/${{ matrix.target }}/release
-          tag_name="${GITHUB_REF#refs/tags/}"
+          zip "ss-${{ env.tag_name}}-${{matrix.target}}.zip" "ss"
 
-          zip "ss-${tag_name}-${{matrix.target}}.zip" "ss"
 
       - name: create zip archive (windows)
         if: ${{ matrix.os == 'windows-latest' }}
         shell: pwsh
         run: |
           cd target/${{ matrix.target }}/release
+          7z a "ss-${{ env.tag_name }}-${{matrix.target}}.zip" "ss.exe"
 
-          $tag_name = $env:GITHUB_REF -replace 'refs/tags/', ''
-          7z a "ss-${tag_name}-${{matrix.target}}.zip" "ss.exe"
 
       - name: upload artifact
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: target/${{ matrix.target }}/release/ss-${tag_name}-${{matrix.target}}.zip
-          asset_name: ss-${tag_name}-${{matrix.target}}.zip
+          asset_name: ss-${{ env.tag_name }}-${{matrix.target}}.zip
           tag: ${{ github.ref }}
           overwrite: true
