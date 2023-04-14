@@ -1,25 +1,8 @@
 name: Build and create release
 on:
-  push:
-    branches: 
-        - cicd
-    tags:
-      - "v[0-9]+.[0-9]+.[0-9]+"
+  release:
+    types: [created]
 jobs:
-  create-release:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: true
-          prerelease: true
-
   build-and-upload:
     runs-on: windows-latest
 
@@ -40,11 +23,20 @@ jobs:
           command: build
           args: --release --target=x86_64-pc-windows-msvc
 
+      - name: Rename binary
+        run: |
+          mv target/x86_64-pc-windows-msvc/release/subset_sum.exe target/x86_64-pc-windows-msvc/release/ss.exe
+
+      - name: Create zip archive
+        run: |
+          cd target/x86_64-pc-windows-msvc/release
+          7z subset_sum_${{ github.ref }}_x86_64-pc-windows-msvc.zip ss.exe
+
       - name: Upload Release Asset
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: target/x86_64-pc-windows-msvc/release/subset_sum.exe
+          file: target/x86_64-pc-windows-msvc/release/subset_sum_${{ github.ref }}_x86_64-pc-windows-msvc.zip
           tag: ${{ github.ref }} 
           overwrite: true
 
