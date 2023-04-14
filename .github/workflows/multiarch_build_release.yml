@@ -75,18 +75,18 @@ jobs:
       - name: create zip archive (linux)
         if: ${{ matrix.os != 'windows-latest' }}
         shell: bash
-        run: |
+`        run: |
           cd target/${{ matrix.target }}/release
           zip "ss-${{ env.tag_name}}-${{matrix.target}}.zip" "ss"
+
 
       - name: create zip archive (windows)
         if: ${{ matrix.os == 'windows-latest' }}
         shell: pwsh
         run: |
           cd target/${{ matrix.target }}/release
-
-          $tag_name = $env:GITHUB_REF -replace 'refs/tags/', ''
           7z a "ss-${{ env.tag_name }}-${{matrix.target}}.zip" "ss.exe"
+
 
       - name: upload artifact
         uses: svenstaro/upload-release-action@v2
