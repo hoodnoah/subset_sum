@@ -75,7 +75,7 @@ jobs:
       - name: create zip archive (linux)
         if: ${{ matrix.os != 'windows-latest' }}
         shell: bash
-`        run: |
+        run: |
           cd target/${{ matrix.target }}/release
           zip "ss-${{ env.tag_name}}-${{matrix.target}}.zip" "ss"
 
