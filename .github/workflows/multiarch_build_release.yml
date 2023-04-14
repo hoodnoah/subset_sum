@@ -71,15 +71,18 @@ jobs:
         shell: bash
         run: |
           cd target/${{ matrix.target }}/release
+          tag_name="${GITHUB_REF#refs/tags/}"
 
-          zip "ss-${{github.ref}}-${{matrix.target}}.zip" "ss"
+          zip "ss-${tag_name}-${{matrix.target}}.zip" "ss"
 
       - name: create zip archive (windows)
         if: ${{ matrix.os == 'windows-latest' }}
         shell: pwsh
         run: |
           cd target/${{ matrix.target }}/release
-          7z a "ss-${{github.ref}}-${{matrix.target}}.zip" "ss.exe"
+
+          $tag_name = $env:GITHUB_REF -replace 'refs/tags/', ''
+          7z a "ss-${tag_name}-${{matrix.target}}.zip" "ss.exe"
 
       - name: upload artifact
         uses: svenstaro/upload-release-action@v2
