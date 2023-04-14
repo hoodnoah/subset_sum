@@ -10,11 +10,15 @@ on:
       - "main"
 jobs:
   Run-Unit-Tests:
-    runs-on: ubuntu-22.04
+    strategy: 
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v3
+      - uses: actions-rs/toolchain@v1
         with:
-          dotnet-version: "7.0.x"
-      - run: dotnet build subset_sum.sln
-      - run: dotnet run --no-restore --project lib/test
+          toolchain: stable
+      - uses: actions-rs/cargo@v1
+        with:
+          command: test

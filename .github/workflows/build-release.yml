@@ -1,0 +1,43 @@
+name: Build and create release
+on:
+  release:
+    types: [created]
+jobs:
+  build-and-upload:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: x86_64-pc-windows-msvc
+          override: true
+        
+      - name: Build Rust Binaries
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release --target=x86_64-pc-windows-msvc
+
+      - name: Rename binary
+        run: |
+          mv target/x86_64-pc-windows-msvc/release/subset_sum.exe target/x86_64-pc-windows-msvc/release/ss.exe
+
+      - name: Create zip archive
+        run: |
+          cd target/x86_64-pc-windows-msvc/release
+          7z subset_sum_${{ github.ref }}_x86_64-pc-windows-msvc.zip ss.exe
+
+      - name: Upload Release Asset
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: target/x86_64-pc-windows-msvc/release/subset_sum_${{ github.ref }}_x86_64-pc-windows-msvc.zip
+          tag: ${{ github.ref }} 
+          overwrite: true
+
+

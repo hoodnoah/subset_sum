@@ -1,0 +1,21 @@
+[package]
+name = "subset_sum"
+version = "0.1.0"
+edition = "2021"
+
+[profile.release]
+strip = true
+opt-level = 3     # optimize for speed
+lto = true        # link-time optimization
+codegen-units = 1 # one codegen unit per crate
+panic = "abort"   # no unwinding stack trace
+
+
+[dependencies]
+itertools = "0.10.5"
+serde = { version = "1.0.0", features = ["derive"] }
+serde_yaml = "0.9"
+
+
+[dev-dependencies]
+proptest = "1.1.0"
