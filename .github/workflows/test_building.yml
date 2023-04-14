@@ -1,13 +1,7 @@
 name: Test build
 run-name: 🛠️ Test build
 on:
-  pull_request:
-    types:
-      - "opened"
-      - "synchronize"
-    branches:
-      - "develop"
-      - "main"
+  workflow_dispatch:
 jobs:
   Build-Multiarch-Artifacts:
     strategy:
