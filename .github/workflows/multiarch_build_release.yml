@@ -68,6 +68,7 @@ jobs:
 
       - name: Extract tag name
         id: get_tag_name
+        shell: bash
         run: | 
           TAG_NAME=$(basename ${{ github.ref}})
           echo "tag_name=$TAG_NAME" >> $GITHUB_ENV
