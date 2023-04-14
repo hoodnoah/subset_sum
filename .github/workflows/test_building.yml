@@ -74,7 +74,7 @@ jobs:
           cd target/${{ matrix.target }}/release
 
           if ["${{matrix.os}}" = "windows-latest"]; then
-            zip ss-${{matrix.target}}.zip ss.exe
+            7z a ss-${{matrix.target}}.zip ss.exe
           else
             zip ss-${{matrix.target}}.zip ss
           fi
