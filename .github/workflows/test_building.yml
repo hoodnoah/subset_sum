@@ -1,0 +1,87 @@
+name: Test build
+run-name: 🛠️ Test build
+on:
+  pull_request:
+    types:
+      - "opened"
+      - "synchronize"
+    branches:
+      - "develop"
+      - "main"
+jobs:
+  Build-Multiarch-Artifacts:
+    strategy:
+      matrix:
+        build: [linux, linux-arm32, linux-arm64, windows32, windows64, windows_arm, macos, macos-arm64]
+        include:
+          - build: linux
+            os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+          - build: linux-arm32
+            os: ubuntu-latest
+            target: armv7-unknown-linux-gnueabihf
+          - build: linux-arm64
+            os: ubuntu-latest
+            target: aarch64-unknown-linux-gnu
+          - build: windows32
+            os: windows-latest
+            target: i686-pc-windows-msvc
+          - build: windows64
+            os: windows-latest
+            target: x86_64-pc-windows-msvc
+          - build: windows_arm
+            os: windows-latest
+            target: aarch64-pc-windows-msvc
+          - build: macos
+            os: macos-latest
+            target: x86_64-apple-darwin
+          - build: macos-arm64
+            os: macos-latest
+            target: aarch64-apple-darwin
+
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v3
+      
+      - name: install rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: ${{ matrix.target }}
+          override: true
+
+      - name: build binary
+        uses: actions-rs/cargo@v1
+        with:
+          use-cross: true
+          command: build
+          args: --release --target=${{ matrix.target }}
+
+      - name: rename binary (linux)
+        if: ${{ matrix.os != 'windows-latest' }}
+        shell: bash
+        run: |
+            mv target/${{ matrix.target }}/release/subset_sum target/${{ matrix.target }}/release/ss
+
+      - name: rename binary (windows)
+        if: ${{ matrix.os == 'windows-latest' }}
+        shell: pwsh
+        run: |
+          mv target/${{ matrix.target }}/release/subset_sum.exe target/${{ matrix.target }}/release/ss.exe
+
+      - name: create zip archive (linux)
+        if: ${{ matrix.os != 'windows-latest' }}
+        shell: bash
+        run: |
+          cd target/${{ matrix.target }}/release
+
+          zip "ss-${{matrix.target}}.zip" "ss"
+
+      - name: create zip archive (windows)
+        if: ${{ matrix.os == 'windows-latest' }}
+        shell: pwsh
+        run: |
+          cd target/${{ matrix.target }}/release
+          7z a "ss-${{matrix.target}}.zip" "ss.exe"
