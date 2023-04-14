@@ -30,7 +30,7 @@ jobs:
       - name: Create zip archive
         run: |
           cd target/x86_64-pc-windows-msvc/release
-          7z subset_sum_${{ github.ref }}_x86_64-pc-windows-msvc.zip ss.exe
+          7z a subset_sum_${{ github.ref }}_x86_64-pc-windows-msvc.zip ss.exe
 
       - name: Upload Release Asset
         uses: svenstaro/upload-release-action@v2

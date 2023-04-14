@@ -1,0 +1,71 @@
+name: Test build
+run-name: 🛠️ Test build
+on:
+  pull_request:
+    types:
+      - "opened"
+      - "synchronize"
+    branches:
+      - "develop"
+      - "main"
+jobs:
+  Run-Unit-Tests:
+    strategy: 
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - uses: actions-rs/cargo@v1
+        with:
+          command: test
+
+  Run-Build-Tests:
+    strategy:
+      matrix:
+        build: [linux, linux-arm32, linux-arm64, windows32, windows64, windows_arm, macos]
+        include:
+          - build: linux
+            os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+          - build: linux-arm32
+            os: ubuntu-latest
+            target: armv7-unknown-linux-gnueabihf
+          - build: linux-arm64
+            os: ubuntu-latest
+            target: aarch64-unknown-linux-gnu
+          - build: windows32
+            os: windows-latest
+            target: i686-pc-windows-msvc
+          - build: windows64
+            os: windows-latest
+            target: x86_64-pc-windows-msvc
+          - build: windows_arm
+            os: windows-latest
+            target: aarch64-pc-windows-msvc
+          - build: macos
+            os: macos-latest
+            target: x86_64-apple-darwin
+
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v3
+      
+      - name: install rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: ${{ matrix.target }}
+          override: true
+
+      - name: build binary
+        uses: actions-rs/cargo@v1
+        with:
+          use-cross: true
+          command: build
+          args: --release --target=${{ matrix.target }}
