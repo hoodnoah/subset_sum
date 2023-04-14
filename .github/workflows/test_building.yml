@@ -9,21 +9,7 @@ on:
       - "develop"
       - "main"
 jobs:
-  Run-Unit-Tests:
-    strategy: 
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-      - uses: actions-rs/cargo@v1
-        with:
-          command: test
-
-  Run-Build-Tests:
+  Build-Multiarch-Artifacts:
     strategy:
       matrix:
         build: [linux, linux-arm32, linux-arm64, windows32, windows64, windows_arm, macos, macos-arm64]
@@ -72,3 +58,21 @@ jobs:
           use-cross: true
           command: build
           args: --release --target=${{ matrix.target }}
+
+      - name: rename binary
+        run: |
+          if ["${{matrix.os}}" = "windows-latest"]; then
+            mv target/${{ matrix.target }}/release/subset_sum.exe target/${{ matrix.target }}/release/ss.exe
+          else
+            mv target/${{ matrix.target }}/release/subset_sum target/${{ matrix.target }}/release/ss
+          fi
+        
+      - name: create zip archive
+        run: |
+          cd target/${{ matrix.target }}/release
+
+          if ["${{matrix.os}}" = "windows-latest"]; then
+            zip ss-${{github.ref}}-${{matrix.target}}.zip ss.exe
+          else
+            zip ss-${{github.ref}}-${{matrix.target}}.zip ss
+          fi
