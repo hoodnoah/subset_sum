@@ -80,6 +80,7 @@ jobs:
         shell: pwsh
         run: |
           cd target/${{ matrix.target }}/release
+
           $tag_name = $env:GITHUB_REF -replace 'refs/tags/', ''
           7z a "ss-${tag_name}-${{matrix.target}}.zip" "ss.exe"
 
