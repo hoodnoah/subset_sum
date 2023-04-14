@@ -62,7 +62,7 @@ jobs:
       - name: rename binary
         shell: bash
         run: |
-          if ["${{matrix.os}}" = "windows-latest"]; then
+          if ["${{matrix.os}}" == "windows-latest"]; then
             mv target/${{ matrix.target }}/release/subset_sum.exe target/${{ matrix.target }}/release/ss.exe
           else
             mv target/${{ matrix.target }}/release/subset_sum target/${{ matrix.target }}/release/ss
@@ -73,8 +73,8 @@ jobs:
         run: |
           cd target/${{ matrix.target }}/release
 
-          if ["${{matrix.os}}" = "windows-latest"]; then
-            7z a ss-${{matrix.target}}.zip ss.exe
+          if ["${{matrix.os}}" == "windows-latest"]; then
+            7z a "ss-${{matrix.target}}.zip" "ss.exe"
           else
-            zip ss-${{matrix.target}}.zip ss
+            zip "ss-${{matrix.target}}.zip" "ss"
           fi
