@@ -3,6 +3,7 @@
     "itertools",
     "powerset",
     "prettytable",
+    "printstd",
     "proptest"
   ]
 }
