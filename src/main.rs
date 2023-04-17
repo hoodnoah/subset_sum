@@ -17,6 +17,7 @@ fn main() {
 
     match result {
         Some(r) => {
+            println!("{} is comprised of the following subset:", config.target);
             pretty_print::get_table(&r[..]).printstd();
         }
         None => {
