@@ -39,7 +39,7 @@ mod pretty_print_tests {
         let labeled_values = input.iter().map(|x| LabeledValue { label: x.to_string(), value: *x }).collect::<Vec<LabeledValue>>();
         let table = get_table(&labeled_values.iter().collect::<Vec<&LabeledValue>>());
 
-        assert_eq!(input.len() + 1, table.len());
+        assert_eq!(input.len(), table.len()); // title row is not included in table.len()
       }
     }
 
