@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.2.0] - 2023-04-17
+
+### Added
+- Tabular printing of subset when one is found
+- Printing of target sum before result table
+
 ## [v0.1.0] - 2023-04-13
 
 ### Added

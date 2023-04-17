@@ -1,5 +1,6 @@
 use std::{fs, io::Read};
 use subset_sum::config::Config;
+use subset_sum::pretty_print;
 
 fn main() {
     let config = Config::build(&mut std::env::args()).unwrap();
@@ -16,9 +17,8 @@ fn main() {
 
     match result {
         Some(r) => {
-            for labeled_value in r {
-                println!("{}: {}", labeled_value.label, labeled_value.value);
-            }
+            println!("{} is comprised of the following subset:", config.target);
+            pretty_print::get_table(&r[..]).printstd();
         }
         None => {
             println!("No valid subset found.")

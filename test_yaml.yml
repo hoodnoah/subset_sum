@@ -4,3 +4,7 @@
   value: 200
 - label: item three
   value: 300.0
+- label: item four
+  value: 0.01
+- label: item five
+  value: 1000.0
