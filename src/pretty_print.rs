@@ -1,12 +1,28 @@
 use crate::find_subsets::LabeledValue;
 use prettytable::{row, Table};
 
+// Finds the maximum number of decimal places in a list of LabeledValue
+fn find_max_num_decimal_places(input: &[&LabeledValue]) -> usize {
+    input
+        .iter()
+        .map(|x| (x.value.fract()).to_string().len())
+        .max()
+        .unwrap()
+        .max(0)
+}
+
+fn format_float(value: f32, num_decimal_places: usize) -> String {
+    format!("{:.*}", num_decimal_places, value)
+}
+
 /// Given a list of LabeledValue, return a prettytable::Table
 pub fn get_table(input: &[&LabeledValue]) -> Table {
+    let decimal_places = find_max_num_decimal_places(input);
+
     let mut table = Table::new();
-    table.add_row(row!["LABEL", "VALUE"]);
+    table.set_titles(row!["LABEL", "VALUE"]);
     for &item in input {
-        table.add_row(row![item.label, item.value]);
+        table.add_row(row![item.label, r->format_float(item.value, decimal_places)]);
     }
     table
 }
