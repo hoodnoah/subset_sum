@@ -1,9 +1,11 @@
 {
   "cSpell.words": [
+    "fract",
     "itertools",
     "powerset",
     "prettytable",
     "printstd",
-    "proptest"
+    "proptest",
+    "trunc"
   ]
 }
