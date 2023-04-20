@@ -5,6 +5,8 @@ pub enum InputReadError {
     YamlParseError(serde_yaml::Error),
 }
 
+/// Given a string (the contents of a YAML file, in this case),
+/// return a vector of LabeledValue structs.
 pub fn read_input_string(input_str: &str) -> Result<Vec<LabeledValue>, InputReadError> {
     let input: Vec<LabeledValue> =
         serde_yaml::from_str(input_str).map_err(|e| InputReadError::YamlParseError(e))?;

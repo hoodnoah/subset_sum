@@ -1,0 +1,8 @@
+# Seeds for failure cases proptest has generated in the past. It is
+# automatically read and these particular cases re-run before any
+# novel cases are generated.
+#
+# It is recommended to check this file in to source control so that
+# everyone who runs the test benefits from these saved cases.
+cc e20339df4841e8c5cbb8f88312c1160f3d6c528cc9ce9fcb0e6f8349c0d0bfd6 # shrinks to input = [LabeledValue { label: "", value: 0.0 }]
+cc 4bc0a92e5314b8e8605f527c0c3eda15f1250648a5a2e5235dd9ccb6e1083fd1 # shrinks to input = [LabeledValue { label: ",", value: 0.0 }]
