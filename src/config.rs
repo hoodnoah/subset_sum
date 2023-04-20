@@ -12,8 +12,8 @@ pub enum ConfigError {
     InvalidTarget,
 }
 
-fn is_yaml_file(file_name: &str) -> bool {
-    file_name.ends_with(".yaml") || file_name.ends_with(".yml")
+fn is_valid_file(file_name: &str) -> bool {
+    file_name.ends_with(".yaml") || file_name.ends_with(".yml") || file_name.ends_with(".csv")
 }
 
 impl Config {
@@ -23,7 +23,7 @@ impl Config {
 
         let input_file_path = match args.next() {
             Some(arg) => {
-                if is_yaml_file(&arg) {
+                if is_valid_file(&arg) {
                     arg
                 } else {
                     return Err(ConfigError::InvalidInputFilePath);
